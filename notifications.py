@@ -16,7 +16,7 @@ class create_notification_940:
         smtp_server = "smtp.office365.com"
         port = 587
         sender = "noreply@gpalogisticsgroup.com"
-        recipients = ["Equitybrands@gpalogisticsgroup.com", "avelazquez@gpalogisticsgroup.com"]
+        recipients = ["Equitybrands@gpalogisticsgroup.com", "avelazquez@gpalogisticsgroup.com", "gpaops20@gpalogisticsgroup.com"]
         password = "Turn*17300"
 
         # variables specific to the translation

@@ -36,7 +36,7 @@ def main():
                     # conversion_997.produce_997(formatted_segments)
                     email = create_notification_940(formatted_segments, file)
                     email.parse_edi_email(formatted_segments, file)
-                    # os.replace(path + file, path + "\\Archive\\940\\" + rem_extension[0] + ".txt")
+                    os.replace(path + file, path + "\\Archive\\940\\" + rem_extension[0] + ".txt")
                 # if filename[0] == "945":
                 #     conversion = Convert_945(path + file)
                 #     conversion.parse_edi()
