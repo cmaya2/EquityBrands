@@ -204,16 +204,6 @@ class Convert_945:
                                 sscc = Container_sub_element.text
                                 if len(sscc) != 20:
                                     raise Exception("This UCC is invalid as it does not meet the 20 character requirement.")
-                                cursor.execute("select * from public.ucc_validation where ucc='" + sscc + "'")
-                                ucc_data = cursor.fetchone()
-                                all_ucc_data = cursor.fetchall()
-                                if ucc_data is None:
-                                    cursor.execute("INSERT INTO ucc_validation(order_num, ucc, entry_date) VALUES ('" + depositor_order_number + "', '" + sscc + "','" + datetime.now().strftime("%Y%m%d")+ "')")
-                                    self.connection.commit()
-                                elif ucc_data[0] == depositor_order_number and ucc_data[1] == sscc:
-                                    pass
-                                else:
-                                    raise Exception("The UCC :" + sscc +  " already exists for the following order number :" + depositor_order_number)
                             if Container_sub_element.tag == 'TrackingNumber':
                                 tracking_number = Container_sub_element.text
                                 if tracking_number is not None:
