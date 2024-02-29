@@ -1,17 +1,18 @@
-import os
 import xml.etree.ElementTree as et
-from datetime import date, datetime
-import sys
-import psycopg2
-import logging
+from datetime import datetime
 
 
 class Convert_940:
 
-    def __init__(self, formatted_segments):
+    def __init__(self, formatted_segments, path, mantis_import_path, transaction_number, client_id, facility):
         self.formatted_segments = formatted_segments
+        self.path = path
+        self.mantis_import_path = mantis_import_path
+        self.transaction_number = transaction_number
+        self.client_id = client_id
+        self.facility = facility
 
-    def parse_edi(self, formatted_segments):
+    def parse_edi(self):
 
         # variables specific to the translation
         orderlinenumber = ''
@@ -19,7 +20,7 @@ class Convert_940:
         customer_name = ''
         identifier = 0
 
-        for seg in formatted_segments:
+        for seg in self.formatted_segments:
             if seg[0] == "ISA":
                 identifier = 0
                 nte_line = []
@@ -31,9 +32,9 @@ class Convert_940:
                 root = et.Element('Order')
                 order_header_tag = et.SubElement(root, 'OrderHeader')
                 facility_tag = et.SubElement(order_header_tag, 'Facility')
-                facility_tag.text = 'SA1'
+                facility_tag.text = self.facility
                 client_tag = et.SubElement(order_header_tag, 'Client')
-                client_tag.text = '21'
+                client_tag.text = self.client_id
                 depositor_order_number_tag = et.SubElement(order_header_tag, 'DepositorOrderNumber')
                 order_status_tag = et.SubElement(order_header_tag, 'OrderStatus')
                 order_status_tag.text = 'New'
@@ -171,5 +172,11 @@ class Convert_940:
                     ship_to_address2_tag.text = ""
                 tree = et.ElementTree(root)
                 et.indent(tree, space="\t", level=0)
-                tree.write("C:\\FTP\\GPAEDIProduction\\Integral\\In\\940_21_" + str(depositor_order_number) + "_" + str(isa) + "_" + str(customer_name) + "_" + datetime.now().strftime("%Y%m%d%H%M%S") + ".xml", encoding="UTF-8", xml_declaration=True)
-                tree.write("C:\\FTP\\GPAEDIProduction\\SA1-Equity Brands\\Out\\Archive\\940\\940_21_" + str(depositor_order_number) + "_" + str(isa) + "_" + str(customer_name) + "_" + datetime.now().strftime("%Y%m%d%H%M%S") + ".xml", encoding="UTF-8", xml_declaration=True)
+                tree.write(self.mantis_import_path + self.transaction_number + "_" + self.client_id + "_" +
+                           str(depositor_order_number_tag.text) + "_" + str(isa) + "_" + str(customer_name_tag.text) +
+                           "_" + datetime.now().strftime("%Y%m%d%H%M%S") + ".xml", encoding="UTF-8",
+                           xml_declaration=True)
+                tree.write(self.path + "Out\\Archive\\" + self.transaction_number + "\\" + self.transaction_number + "_"
+                           + self.client_id + "_" + str(depositor_order_number_tag.text) + "_" + str(isa) + "_" +
+                           str(customer_name_tag.text) + "_" + datetime.now().strftime("%Y%m%d%H%M%S") + ".xml",
+                           encoding="UTF-8", xml_declaration=True)
